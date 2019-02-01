@@ -21,6 +21,13 @@ namespace jack {
       auto fptr = new std::function<int(jack_nframes_t)>(fun);
       jack_set_process_callback(handle, [](jack_nframes_t nframes, void *arg) { return (*(std::function<int(jack_nframes_t)>*)arg)(nframes); }, (void*)fptr);
     };
+    template<class A>
+    void set_shutdown_cb(A fun) {
+      typedef std::function<void()> fptr_t;
+      auto fptr = new fptr_t(fun);
+      jack_on_shutdown(handle, [](void *arg) { return (*(fptr_t*)arg)(); }, (void*)fptr);
+    };
+
 
 
     inline void close() {
