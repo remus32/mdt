@@ -1,8 +1,8 @@
+#include <condition_variable>
 #include <iostream>
+#include <mutex>
 #include <string>
 #include <thread>
-#include <mutex>
-#include <condition_variable>
 
 struct notifier {
   std::mutex m;
@@ -21,7 +21,8 @@ struct notifier {
   };
   inline int wait() {
     std::unique_lock<std::mutex> lk(m);
-    while(!ready) cv.wait(lk);
+    while (!ready)
+      cv.wait(lk);
     ready = 0;
     return value;
   };
